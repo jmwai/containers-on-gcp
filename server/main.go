@@ -51,7 +51,7 @@ func HandleFindPlaces(w http.ResponseWriter, r *http.Request) {
 	}
 	params := r.URL.Query()
 
-	location := strings.Replace(params.Get("latlng"), "undefined,undefined", "-1.219101,36.879212", -1) //incase the client did not send
+	location := params.Get("latlng")
 	keyword := strings.Replace(params.Get("term"), " ", "+", -1)
 
 	key := os.Getenv("GOOGLE_MAPS_API_KEY")
