@@ -20,18 +20,20 @@ The `config` directory contains the scripts and manifests.
     - Compute Engine
 - We will use Artifact Registry to store the docker image. You can learn about and create an Artifact Registry for your project [here](https://cloud.google.com/artifact-registry)
 
-The demo app use Google Maps API, so to run it you need to get an API Key [here.](https://developers.google.com/maps/documentation/embed/get-api-key) 
+The demo app is in `server/main.go` and `client/index.html` and it uses Google Maps API. 
+
+You can obtain an API Key [here.](https://developers.google.com/maps/documentation/embed/get-api-key) 
 
 Add the key to the .env file `GOOGLE_MAPS_API_KEY="your-api-key"`
 
-My project ID is: `devfest-demos-364710` which is what I use in the following demo commands. You will need to replace it with your project's id.
+My project ID is `devfest-demos-364710` which is what I use in the commands in this doc. Just replace it with your Google Cloud project ID.
 
 #####  Running the app in your local machine
 You can run the app using `go run server/main.go`
 The app will be running on `http://0.0.0.0:8080/`
 
 
-Once you verify the app is working, it's now time to package it in Docker using these commands.
+Once you verify the app is working, it's now time to package it in Docker.
 ##### Build the Image
 ```
 
@@ -48,7 +50,7 @@ docker run -p 8080:8080 europe-west1-docker.pkg.dev/devfest-demos-364710/gcp-con
 ```
 
  The app will be runnging on `http://0.0.0.0:8080/`
-##### Pushing the image to Artifact Registry
+##### Push the image to Artifact Registry
 After verifying the app is running locally we need to push the image to the artifact registry so we can access it from the cloud services we will be testing.
 
 `docker push europe-west1-docker.pkg.dev/devfest-demos-364710/gcp-containers-demo/demoapp:latest`
