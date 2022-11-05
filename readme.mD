@@ -1,10 +1,10 @@
-### GCP Containers Demo.
+#### Four unique ways to deploy and scale your containerized app on Google Cloud.
 
 I gave this talk at #DevFestNairobi22.
 
-The slides for the talk are [here](https://docs.google.com/presentation/d/18Z38kkWKpe-K0IAQjKBSr2QI07DKg0krQ8yfK6hqY5c/edit?usp=sharing)
+The slides for the talk are [here](https://docs.google.com/presentation/d/16NU_pAGr0hmur5mnosQ4iOtK7z3wEvDG9e7wfAJFaUE/edit?usp=sharing)
 
-You can follow these docs to run the containerised demo app on `Cloud Run`, `App Engine`, `GKE` and `Compute Engine`
+You can follow these docs to run the containerized demo app on `Cloud Run`, `App Engine`, `GKE` and `Compute Engine`
 
 The `config` directory contains the scripts and manifests. 
 
@@ -31,7 +31,7 @@ You can run the app using `go run server/main.go`
 The app will be running on `http://0.0.0.0:8080/`
 
 
-Once you verify the app is working it's now time to package it in Docker using these commands.
+Once you verify the app is working, it's now time to package it in Docker using these commands.
 ##### Build the Image
 ```
 
@@ -77,9 +77,9 @@ To deploy run `gcloud builds submit` in the same directoy where `cloudbuild.yaml
 
 After the deploment you will see the url of the app running on cloud run on the console.
 
-To allow internet traffic to access the app;
- - Select the just created cloud run service in the console. 
- - In the new principals textbox, enter the value allUsers
+To allow internet traffic so you access the app;
+ - Select the just created cloud run service in your GCP console. 
+ - In the new principals textbox, enter the value `allUsers`
  - From the Role dropdown menu, select the Cloud Run Invoker role.
  - Click Save.
 
@@ -90,7 +90,7 @@ We can also deploy our app to App engine flex environment where it will be built
 
 The App Engine Flex settings are in the file `app.yaml`. 
 
-We set the runtime as custom. This means cloud build will use our a Dockerfile to build and deploy the app to App Engine Flex environment.
+We set the runtime as custom. This means App engine will the Dockerfile to build the image using [cloud build](https://cloud.google.com/build) and deploy it to flex environment..
 ```
 runtime: custom
 env: flex
@@ -112,7 +112,7 @@ automatic_scaling:
     target_utilization: 0.9
   target_concurrent_requests: 100
 ```
-The command to deploy the app to flex is `gcloud app deploy`. App engine uses the Dockerfile to build the image using [cloud build](https://cloud.google.com/build) and deploying it to flex environment. After the deploment you will see the url of the app on the console. 
+The command to deploy the app to flex is `gcloud app deploy`.  After the deploment you will see the url of the app on the console. 
 
 You can also access the app through `gcloud app browse`
 
