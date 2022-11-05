@@ -96,14 +96,25 @@ The Flex configs are in the file `app.yaml`.
 
 We set the runtime as custom. This means cloud build will use our a Dockerfile to build and deploy the app to App Engine Flex.
 ```
-runtime: custom 
+runtime: custom
 env: flex
-manual_scaling:
-  instances: 1
 resources:
   cpu: 1
   memory_gb: 0.5
   disk_size_gb: 10
+liveness_check:
+  path: "/ping"
+  check_interval_sec: 30
+  timeout_sec: 4
+  failure_threshold: 2
+  success_threshold: 2
+automatic_scaling:
+  min_num_instances: 1
+  max_num_instances: 3
+  cool_down_period_sec: 180
+  cpu_utilization:
+    target_utilization: 0.9
+  target_concurrent_requests: 100
 ```
 The command to deploy the app to flex is `gcloud app deploy`. App engine uses the Dockerfile to build the image using [cloud build](https://cloud.google.com/build) and deploying it to flex environment. After the deploment you will see the url of the app on the console. 
 
