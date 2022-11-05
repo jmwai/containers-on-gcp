@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+  labels:
+    app: app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      containers:
+      - name: app
+        image: europe-west1-docker.pkg.dev/devfest-demos-364710/gcp-containers-demo/demoapp:latest
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            memory: "10Mi"
+            cpu: "1m"
+          limits:
+            memory: "10Mi"
+            cpu: "2m"

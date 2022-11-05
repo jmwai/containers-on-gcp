@@ -1,0 +1,104 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <style type="style/css">
+            .places {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-gap: .5rem;
+        }
+        /* .place-pic{
+            width: 200px;
+            height: 150px;
+        } */
+	</style>
+    <title>GCP Demo!</title>
+  </head>
+	  <div class="container">
+        <form>
+        <div class="input-group mb-2">
+            <input id="search" type="text" class="form-control" placeholder="Search for something" aria-label="Search for something" aria-describedby="button-addon2">
+            <input id="mybtn" class="btn btn-primary" type="submit" value="Submit">
+          </div>
+        </form>
+          <!-- Gallery -->
+          <hr class="mt-2 mb-5">
+          <div class="row text-center text-lg-start places">
+          </div>
+          <!-- Gallery --> 
+		</div>
+	
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+<script charset="utf-8">
+    var lat;
+    var lng;
+    var key;
+
+    function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(getPosition);
+    } else {
+        console.log("Geolocation is not supported by this browser.")
+    }
+    }
+
+    function getPosition(position) {
+        lat = position.coords.latitude
+        lng = position.coords.longitude
+        
+    }
+    getLocation();
+
+    
+    $.ajax({
+        url: "/key",
+        dataType: 'json',
+        type: 'GET',
+        contentType: 'application/json',
+        success: function(data) {
+            key = data["key"]
+        }
+    });
+    
+    $( "form" ).submit(function(e){
+    e.preventDefault();
+    $(".places").empty();
+    var termInput = $("#search").val()
+    var url = "/search?term="+termInput+"&latlng="+lat+","+lng;   
+    $.getJSON(url, function(result){
+        $.each(result["results"], function(i, result){
+            try {
+                var photo_ref = result["photos"][0]["photo_reference"]
+                var link = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="+photo_ref+"&key="+key
+                var name = result["name"]
+                obj = {
+                    "name": name,
+                    "photo": link
+                }
+                var imgDom = '<div class="col-lg-3 col-md-4 col-6"> \
+                             <img style="height: 70%; width: 80%; object-fit: contain" \
+                              class="img-fluid img-thumbnail place-pic" src='+link+' alt="place image cap" /> <br /> \
+                             <div class="card-body">  \
+                            <h5 class="card-title">'+name+'</h5> \
+                            </div></div>'
+                $(".places").append(imgDom);
+            }
+            catch(err) {
+            obj = result
+            }
+        
+            console.log(obj)
+            });
+    });
+    return false;
+});
+    
+</script>
+</html>

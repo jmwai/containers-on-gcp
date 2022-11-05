@@ -1,0 +1,13 @@
+steps:
+# Deploy existing container image to Cloud Run. gcloud builds submit
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
+  args: 
+  - 'run' 
+  - 'deploy'
+  - 'gcp-containers-demo'
+  - '--image'
+  - 'europe-west1-docker.pkg.dev/devfest-demos-364710/gcp-containers-demo/demoapp:latest'
+  - '--region'
+  - 'europe-west1'
+
