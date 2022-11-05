@@ -1,17 +1,12 @@
 ### GCP Containers Demo.
 
-This projects shows how to run a containerized app on GCP.
+I gave this talk at #DevFestNairobi22.
 
 The slides for the talk are [here](https://docs.google.com/presentation/d/18Z38kkWKpe-K0IAQjKBSr2QI07DKg0krQ8yfK6hqY5c/edit?usp=sharing)
 
-The config/ directory contains scripts and yaml files that you can execute to deploy the app on GCP.
- 
-The config directory has 
-- cloud_run
-- compute
-- flex
-- k8s
-- registry
+You can follow these docs to run the containerised demo app on `Cloud Run`, `App Engine`, `GKE` and `Compute Engine`
+
+The `config` directory contains the scripts and manifests. 
 
 #### Prerequisites 
 - Create a Google Cloud account [here](https://cloud.google.com/) if you don't have one.
@@ -33,7 +28,7 @@ My project ID is: `devfest-demos-364710` which is what I use in the following de
 
 #####  Running the app in your local machine
 You can run the app using `go run server/main.go`
-The app will be runnging on `http://0.0.0.0:8080/`
+The app will be running on `http://0.0.0.0:8080/`
 
 
 Once you verify the app is working it's now time to package it in Docker using these commands.
@@ -60,7 +55,9 @@ After verifying the app is running locally we need to push the image to the arti
 
 ##### Deploying to Cloud Run
 
-With our app packaged in docker and pushed to the artifact registry, we can run it in cloud run using below configuration. The config for running it on Cloud is in the file `config/cloudbuild.yaml` with this yaml code. We only have one build step since we already built the image.
+With our app packaged in docker and pushed to the artifact registry, we can run it in cloud run using below configuration. The config for running it on cloud run is in the file `config/cloudbuild.yaml`.
+
+We only have one build step since we already built and pushed the image.
 ```
 steps:
 # Deploy existing container image to Cloud Run
@@ -80,10 +77,9 @@ To deploy run `gcloud builds submit` in the same directoy where `cloudbuild.yaml
 
 After the deploment you will see the url of the app running on cloud run on the console.
 
-You need to allow internet traffic to access the app.
-
-Select the service in the console. 
- - In the New principals textbox, enter the value allUsers
+To allow internet traffic to access the app;
+ - Select the just created cloud run service in the console. 
+ - In the new principals textbox, enter the value allUsers
  - From the Role dropdown menu, select the Cloud Run Invoker role.
  - Click Save.
 
@@ -92,9 +88,9 @@ Select the service in the console.
 ##### Deploying App Engine Flex
 We can also deploy our app to App engine flex environment where it will be built as docker image.
 
-The Flex configs are in the file `app.yaml`. 
+The App Engine Flex settings are in the file `app.yaml`. 
 
-We set the runtime as custom. This means cloud build will use our a Dockerfile to build and deploy the app to App Engine Flex.
+We set the runtime as custom. This means cloud build will use our a Dockerfile to build and deploy the app to App Engine Flex environment.
 ```
 runtime: custom
 env: flex
@@ -121,7 +117,7 @@ The command to deploy the app to flex is `gcloud app deploy`. App engine uses th
 You can also access the app through `gcloud app browse`
 
 ##### Deploying to GKE
-To deploy the same containerised app to GKE, you first need to [create](https://cloud.google.com/kubernetes-engine/docs/deploy-app-cluster) a cluster and fetch the credentials using these commands. 
+To deploy the same containerised app to GKE, you first need to [create a cluster](https://cloud.google.com/kubernetes-engine/docs/deploy-app-cluster) and fetch the credentials using these commands. 
 ```
 #Create a cluster
 gcloud container clusters create defvest-demo-cluster-1 --zone=europe-west1
@@ -139,12 +135,12 @@ To apply the manifests to your new GKE cluster, run
 
 `kubectl apply -f config/k8s`
 
-To get the IP so you can access the application run
+To get the Public IP of the service so you can access the application run
 `kubectl get svc`
 
 ##### Deploying to Container Optimized VM
 
-We will can also deploy the same image in a Container Optimized VM on Compute Engine. The command for this is in `config/compute/run.sh`
+We will also deploy the same image on a Container Optimized VM on Compute Engine. The command for create a VM with our image  is in `config/compute/run.sh`
 
 ```
 gcloud compute instances \
@@ -155,4 +151,5 @@ devfest-containers-demo \
 --container-image europe-west1-docker.pkg.dev/devfest-demos-364710/gcp-containers-demo/demoapp:latest
 
 ```
+You need to allow http traffic on the [firewall](https://cloud.google.com/vpc/docs/firewalls) and then you can access the app running on the vm via the attached ip.
 Remember to clean up your resources after to avoid additional costs. 
