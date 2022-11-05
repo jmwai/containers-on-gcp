@@ -29,7 +29,7 @@ The demo app use Google Maps API, so to run it you need to get an API Key [here.
 
 Add the key to the .env file `GOOGLE_MAPS_API_KEY="your-api-key"`
 
-My project ID is: `devfest-demos-364710` which is what I use in the following demo commands
+My project ID is: `devfest-demos-364710` which is what I use in the following demo commands. You will need to replace it with your project's id.
 
 #####  Running the app in your local machine
 You can run the app using `go run server/main.go`
@@ -60,7 +60,7 @@ After verifying the app is running locally we need to push the image to the arti
 
 ##### Deploying to Cloud Run
 
-With our app packaged in docker and pushed to the artifact registry, we can run it in cloud run using below configuration. The config for running it on Cloud is in the file `config/cloudbuild.yaml` with this yaml code.
+With our app packaged in docker and pushed to the artifact registry, we can run it in cloud run using below configuration. The config for running it on Cloud is in the file `config/cloudbuild.yaml` with this yaml code. We only have one build step since we already built the image.
 ```
 steps:
 # Deploy existing container image to Cloud Run
@@ -85,11 +85,12 @@ You need to allow internet traffic to access the app.
 Select the service in the console. 
  - In the New principals textbox, enter the value allUsers
  - From the Role dropdown menu, select the Cloud Run Invoker role.
+ - Click Save.
 
-Click Save.
+ You can now access the app running on cloud run with the url that provided by cloud run.
 
 ##### Deploying App Engine Flex
-We can also deploy our app to App engine flex where it will be built as docker image.
+We can also deploy our app to App engine flex environment where it will be built as docker image.
 
 The Flex configs are in the file `app.yaml`. 
 
@@ -109,7 +110,7 @@ The command to deploy the app to flex is `gcloud app deploy`. App engine uses th
 You can also access the app through `gcloud app browse`
 
 ##### Deploying to GKE
-To deploy the same containerised app to GKE, you first need to create a cluster and fetch the credentials using these commands. 
+To deploy the same containerised app to GKE, you first need to [create](https://cloud.google.com/kubernetes-engine/docs/deploy-app-cluster) a cluster and fetch the credentials using these commands. 
 ```
 #Create a cluster
 gcloud container clusters create defvest-demo-cluster-1 --zone=europe-west1
@@ -118,12 +119,12 @@ gcloud container clusters create defvest-demo-cluster-1 --zone=europe-west1
 gcloud container clusters get-credentials defvest-demo-cluster-1 --zone=europe-west1
 
 ```
-We will use the configs in `config/k8s` directory. i.e 
+We will use the Kubernetes manifests in `config/k8s` directory. i.e 
 - `deployment.yaml` 
 - `service.yaml` 
 - `hpa.yaml` 
 
-This command will apply the configs to our GKE cluster
+To apply the manifests to your new GKE cluster, run
 
 `kubectl apply -f config/k8s`
 
@@ -137,7 +138,10 @@ We will can also deploy the same image in a Container Optimized VM on Compute En
 ```
 gcloud compute instances \
 create-with-container \
-gcp-containers-demo \
+devfest-containers-demo \
+--machine-type g1-small \
+--zone=europe-west1-b \
 --container-image europe-west1-docker.pkg.dev/devfest-demos-364710/gcp-containers-demo/demoapp:latest
 
 ```
+Remember to clean up your resources after to avoid additional costs. 
